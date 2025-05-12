@@ -1,44 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 
 import { colors } from '../../../config/theme/theme';
 import { Pressable } from 'react-native-gesture-handler';
+import { useAnimation } from '../../hooks/useAnimation';
 
 export const Animation101Screen = () => {
-  const animatedOpacity = useRef(new Animated.Value(0)).current;
-  const animatedTop = useRef(new Animated.Value(-100)).current;
-
-  const fadeIn = () => {
-    Animated.parallel([
-      Animated.timing(animatedTop, {
-        toValue: 0,
-        duration: 700,
-        useNativeDriver: true,
-        easing: Easing.bounce,
-      }),
-      Animated.timing(animatedOpacity, {
-        toValue: 1,
-        duration: 275,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  const fadeOut = () => {
-    Animated.parallel([
-      Animated.timing(animatedTop, {
-        toValue: -100,
-        duration: 700,
-        useNativeDriver: true,
-        easing: Easing.bounce,
-      }),
-      Animated.timing(animatedOpacity, {
-        toValue: 0,
-        duration: 275,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
+  const { animatedOpacity, animatedTop, fadeTo, moveY } = useAnimation();
 
   return (
     <View style={styles.container}>
@@ -56,11 +24,31 @@ export const Animation101Screen = () => {
         ]}
       />
 
-      <Pressable onPress={fadeIn} style={{ marginTop: 10 }}>
+      <Pressable
+        onPress={() => {
+          fadeTo({ from: 0, toValue: 1 });
+          moveY({
+            from: -100,
+            to: 0,
+            duration: 750,
+            easing: Easing.bounce,
+          });
+        }}
+        style={{ marginTop: 10 }}>
         <Text>FadeIn</Text>
       </Pressable>
 
-      <Pressable onPress={fadeOut} style={{ marginTop: 10 }}>
+      <Pressable
+        onPress={() => {
+          fadeTo({ toValue: 0 });
+          moveY({
+            from: 0,
+            to: -100,
+            duration: 750,
+            easing: Easing.elastic(1),
+          });
+        }}
+        style={{ marginTop: 10 }}>
         <Text>FadeOut</Text>
       </Pressable>
     </View>
