@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Switch } from 'react-native';
 
 import { CustomView } from '../../components/ui/CustomView';
 import { Card } from '../../components/ui/Card';
 import { CustomSwitch } from '../../components/ui/CustomSwitch';
-
-interface Props {
-  dinero: boolean;
-  edad: boolean;
-  energia: boolean;
-}
+import Separator from '../../components/ui/Separator';
 
 export const SwitchScreen = () => {
   const [state, setState] = useState({
@@ -18,45 +13,28 @@ export const SwitchScreen = () => {
     energia: false,
   });
 
-  const handleSwitchChange = (switchName: keyof Props) => {
-    const nuevosValores = { ...state };
-
-    const activos = Object.values(nuevosValores).filter(v => v).length;
-
-    if (activos === 2) {
-      Object.keys(nuevosValores).forEach(key => {
-        if (key !== switchName && nuevosValores[key as keyof Props]) {
-          nuevosValores[key as keyof Props] = false; 
-        }
-      });
-      nuevosValores[switchName] = true; 
-    } else {
-      nuevosValores[switchName] = !nuevosValores[switchName];
-    }
-
-    setState(nuevosValores);
-  };
-
   return (
     <CustomView style={{ marginTop: 100, paddingHorizontal: 10 }}>
-      <Card style={{ marginBottom: 10 }}>
+      <Card>
         <CustomSwitch
           isOn={state.dinero}
-          onChange={() => handleSwitchChange('dinero')}
+          onChange={value => setState({ ...state, dinero: value })}
           text="dinero"
         />
       </Card>
-      <Card style={{ marginBottom: 10 }}>
+      <Separator />
+      <Card>
         <CustomSwitch
           isOn={state.edad}
-          onChange={() => handleSwitchChange('edad')}
+          onChange={value => setState({ ...state, edad: value })}
           text="edad"
         />
       </Card>
-      <Card style={{ marginBottom: 10 }}>
+      <Separator />
+      <Card>
         <CustomSwitch
           isOn={state.energia}
-          onChange={() => handleSwitchChange('energia')}
+          onChange={value => setState({ ...state, energia: value })}
           text="energia"
         />
       </Card>

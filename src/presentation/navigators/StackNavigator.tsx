@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Animation101Screen } from '../screens/animations/Animation101Screen';
 import { Animation102Screen } from '../screens/animations/Animation102Screen';
 import { SwitchScreen } from '../screens/switches/SwitchScreen';
+import AlertScreen from '../screens/alerts/AlertScreen';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ export const StackNavigator = () => {
       <Stack.Screen name="Animation102Screen" component={Animation102Screen} />
 
       <Stack.Screen name="SwitchScreen" component={SwitchScreen} />
+      <Stack.Screen name="AlertScreen" component={AlertScreen} />
     </Stack.Navigator>
   );
 };
