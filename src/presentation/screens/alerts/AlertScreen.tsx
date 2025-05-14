@@ -1,12 +1,18 @@
-import { View, Text, Alert } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
+import { View, Text, Alert, StyleSheet } from 'react-native';
+import Dialog from 'react-native-dialog';
+
 import { CustomView } from '../../components/ui/CustomView';
 import { Title } from '../../components/ui/Title';
 import { globalStyles } from '../../../config/theme/theme';
 import { Button } from '../../components/ui/Button';
+import { AlertPrompt } from '../../components/ui/AlertPrompt';
 
 export const AlertScreen = () => {
-  const createTwoButtonAlert = () =>
+  const [visible, setVisible] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const createTwoButtonAlert = () => {
     Alert.alert('Alert Title', 'My Alert Msg', [
       {
         text: 'Cancel',
@@ -15,8 +21,9 @@ export const AlertScreen = () => {
       },
       { text: 'OK', onPress: () => console.log('OK Pressed') },
     ]);
+  };
 
-  const createThreeButtonAlert = () =>
+  const createThreeButtonAlert = () => {
     Alert.alert('Alert Title', 'My Alert Msg', [
       {
         text: 'Ask me later',
@@ -29,6 +36,18 @@ export const AlertScreen = () => {
       },
       { text: 'OK', onPress: () => console.log('OK Pressed') },
     ]);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+    setEmail('');
+  };
+
+  const handleSubmit = () => {
+    console.log('Correo ingresado:', email);
+    setVisible(false);
+    setEmail('');
+  };
 
   return (
     <CustomView style={globalStyles.globalMargin}>
@@ -37,9 +56,17 @@ export const AlertScreen = () => {
       <View style={{ height: 10 }} />
       <Button text="Alerta - 3 botones" onPress={createThreeButtonAlert} />
       <View style={{ height: 10 }} />
-      <Button text="Prompt" onPress={() => {}} />
+      <Button text="Prompt" onPress={() => setVisible(true)} />
+
+      <AlertPrompt
+        visible={visible}
+        value={email}
+        title={'coloca tu mail'}
+        text={'ejemplo@correo.com'}
+        onChange={setEmail}
+        onCancel={handleCancel}
+        onSubmit={handleSubmit}
+      />
     </CustomView>
   );
 };
-
-export default AlertScreen;
