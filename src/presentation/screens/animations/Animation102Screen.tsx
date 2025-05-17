@@ -1,28 +1,25 @@
 import React, { useRef, useState } from 'react';
-import {
-  Animated,
-  PanResponder,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Animated, PanResponder, StyleSheet } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { CustomView } from '../../components/ui/CustomView';
+import { Button } from '../../components/ui/Button';
 
 type BoxProps = {
-  color: string;
-  label: string;
   id: string;
+  color: string;
+  label?: string;
   activeId: string | null;
   setActiveId: (id: string | null) => void;
+  springBack?: boolean;
 };
 
 const DraggableBox = ({
+  id,
   color,
   label,
-  id,
   activeId,
   setActiveId,
+  springBack,
 }: BoxProps) => {
   const pan = useRef(new Animated.ValueXY()).current;
 
@@ -31,8 +28,7 @@ const DraggableBox = ({
       onMoveShouldSetPanResponder: () => true,
 
       onPanResponderGrant: () => {
-        setActiveId(id); // Activamos este box
-        pan.extractOffset();
+        setActiveId(id), pan.extractOffset();
       },
 
       onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], {
@@ -41,13 +37,18 @@ const DraggableBox = ({
 
       onPanResponderRelease: () => {
         pan.flattenOffset();
-        setActiveId(null); // Ya no está activo
+        setActiveId(null);
+        if (springBack) {
+          Animated.spring(pan, {
+            toValue: { x: 0, y: 0 },
+            useNativeDriver: false,
+          }).start();
+        }
       },
     }),
   ).current;
 
   const handleReset = () => {
-    pan.flattenOffset();
     Animated.spring(pan, {
       toValue: { x: 0, y: 0 },
       useNativeDriver: false,
@@ -57,7 +58,7 @@ const DraggableBox = ({
   const isActive = id === activeId;
 
   return (
-    <View style={styles.boxWrapper}>
+    <CustomView style={styles.container}>
       <Animated.View
         {...panResponder.panHandlers}
         style={[
@@ -66,10 +67,10 @@ const DraggableBox = ({
           { backgroundColor: color, zIndex: isActive ? 1 : 0 },
         ]}
       />
-      <Pressable onPress={handleReset} style={styles.button}>
-        <Text>{label}</Text>
-      </Pressable>
-    </View>
+      {!springBack && label && (
+        <Button text={label} onPress={handleReset} styles={{ marginTop: 10 }} />
+      )}
+    </CustomView>
   );
 };
 
@@ -77,31 +78,23 @@ export const Animation102Screen = () => {
   const [activeBox, setActiveBox] = useState<string | null>(null);
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <DraggableBox
-          id="box1"
-          color="#21aaab"
-          label="Volver caja 1"
-          activeId={activeBox}
-          setActiveId={setActiveBox}
-        />
-        <DraggableBox
-          id="box2"
-          color="#61dafb"
-          label="Volver caja 2"
-          activeId={activeBox}
-          setActiveId={setActiveBox}
-        />
-        <DraggableBox
-          id="box3"
-          color="#61ffdf"
-          label="Volver caja 3"
-          activeId={activeBox}
-          setActiveId={setActiveBox}
-        />
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <CustomView style={styles.container}>
+      <DraggableBox
+        id="box2"
+        color="#ff7675"
+        activeId={activeBox}
+        setActiveId={setActiveBox}
+        springBack={true}
+      />
+      <DraggableBox
+        id="box1"
+        color="#0984e3"
+        label="Volver caja 1"
+        activeId={activeBox}
+        setActiveId={setActiveBox}
+        springBack={false}
+      />
+    </CustomView>
   );
 };
 
@@ -111,20 +104,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  boxWrapper: {
-    alignItems: 'center',
-    marginVertical: 40,
-  },
+
   box: {
     width: 80,
     height: 80,
-    borderRadius: 4,
-    position: 'absolute',
-  },
-  button: {
-    marginTop: 100,
-    padding: 6,
-    backgroundColor: '#eee',
     borderRadius: 4,
   },
 });

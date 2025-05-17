@@ -1,18 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, Animated, Easing } from 'react-native';
 
-import { colors } from '../../../config/theme/theme';
-import { Pressable } from 'react-native-gesture-handler';
 import { useAnimation } from '../../hooks/useAnimation';
+import { ThemeContext } from '../../context/ThemeContext';
+import { CustomView } from '../../components/ui/CustomView';
+import { Button } from '../../components/ui/Button';
 
 export const Animation101Screen = () => {
+  const { colors } = useContext(ThemeContext);
   const { animatedOpacity, animatedTop, fadeTo, moveY } = useAnimation();
 
   return (
-    <View style={styles.container}>
+    <CustomView style={styles.container}>
       <Animated.View
         style={[
           styles.purpleBox,
+          {
+            backgroundColor: colors.primary,
+          },
           {
             opacity: animatedOpacity,
             transform: [
@@ -24,7 +29,8 @@ export const Animation101Screen = () => {
         ]}
       />
 
-      <Pressable
+      <Button
+        text="FadeIn"
         onPress={() => {
           fadeTo({ from: 0, toValue: 1 });
           moveY({
@@ -34,11 +40,11 @@ export const Animation101Screen = () => {
             easing: Easing.bounce,
           });
         }}
-        style={{ marginTop: 10 }}>
-        <Text>FadeIn</Text>
-      </Pressable>
+        styles={{ marginTop: 10 }}
+      />
 
-      <Pressable
+      <Button
+        text="fadeOut"
         onPress={() => {
           fadeTo({ toValue: 0 });
           moveY({
@@ -48,10 +54,9 @@ export const Animation101Screen = () => {
             easing: Easing.elastic(1),
           });
         }}
-        style={{ marginTop: 10 }}>
-        <Text>FadeOut</Text>
-      </Pressable>
-    </View>
+        styles={{ marginTop: 10 }}
+      />
+    </CustomView>
   );
 };
 
@@ -62,7 +67,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   purpleBox: {
-    backgroundColor: colors.primary,
     width: 150,
     height: 150,
   },

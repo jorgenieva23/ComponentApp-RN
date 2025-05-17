@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, Image, View } from 'react-native';
 import { Title } from '../../components/ui/Title';
 import { CustomView } from '../../components/ui/CustomView';
 import { colors } from '../../../config/theme/theme';
+import { FadeInImage } from '../../components/ui/FadeInImage';
 
 export const InfiniteScrollScreen = () => {
   const [numbers, setNumbers] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -36,9 +37,13 @@ interface ListProps {
 
 const ListItem = ({ number }: ListProps) => {
   return (
-    <Image
-      source={{ uri: `https://picsum.photos/id/${number}/237/200` }}
+    <FadeInImage
+      uri={`https://picsum.photos/id/${number}/237/200`}
       style={{ height: 400, width: '100%' }}
     />
+    // <Image
+    //   source={{ uri: `https://picsum.photos/id/${number}/237/200` }}
+    //   style={{ height: 400, width: '100%' }}
+    // />
   );
 };

@@ -1,28 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, Switch, Platform } from 'react-native';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { ThemeContext } from '../../context/ThemeContext';
 
 interface Props {
   isOn: boolean;
   text?: string;
-  onChange: (vale: boolean) => void;
+
+  onChange: (value: boolean) => void;
 }
 
 export const CustomSwitch = ({ isOn, text, onChange }: Props) => {
+  const { colors } = useContext(ThemeContext);
+
   return (
-    <View style={style.switchRow}>
-      {text && <Text>{text}</Text>}
-      <Switch
-        thumbColor={Platform.OS === 'android' ? Colors.primary : ''}
-        onValueChange={onChange}
-        value={isOn}
-      />
+    <View
+      style={[styles.switchRow, { backgroundColor: colors.cardBackground }]}>
+      {text && <Text style={{ color: colors.text }}>{text}</Text>}
+
+      <Switch onValueChange={onChange} value={isOn} />
     </View>
   );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   switchRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
